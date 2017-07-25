@@ -19,17 +19,7 @@ namespace Mailing_Label
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string s = comboBox1.SelectedText;
-            string t = comboBox2.SelectedText;
-
-            int u = string.CompareOrdinal(t, s);
-
-            if (u == 1)
-            {
-                MessageBox.Show("Hello.");
-            }
-
-
+            
         }
 
         private void comboBox2_Click(object sender, EventArgs e)
@@ -43,6 +33,26 @@ namespace Mailing_Label
                 {
                     MessageBox.Show("Select an option on the left drop-down box first.");
                 }
+            }
+        }
+
+        private void comboBox2_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void comboBox2_SelectedValueChanged(object sender, EventArgs e)
+        {
+            string s = comboBox1.Text;
+            string t = comboBox2.Text;
+
+            string v = comboBox1.Text;
+
+            int u = string.CompareOrdinal(s, t);
+
+            if (u > 0)
+            {
+                MessageBox.Show("The selected item on the left is " + v + ", which is lower in the descending alphabetical order. Please edit your choice and try again.");
             }
         }
     }
