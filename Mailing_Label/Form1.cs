@@ -29,20 +29,22 @@ namespace Mailing_Label
             try
             {
                 sqcon.Open();
-                string Query = "Select DISTINCT Class_Desc FROM Customer_Class";
-                SqlCommand createCommand = new SqlCommand(Query, sqcon);
-                //createCommand.ExecuteNonQuery();
-                SqlDataReader dr = createCommand.ExecuteReader();
-                while(dr.Read())
+                if (checkBox1.Checked == false)
                 {
-                    string name = dr.GetString(0);
-                    comboBox3.Items.Add(name);
+                    string Query = "Select DISTINCT Class_Desc FROM Customer_Class";
+                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                    //createCommand.ExecuteNonQuery();
+                    SqlDataReader dr = createCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        string name = dr.GetString(0);
+                        comboBox3.Items.Add(name);
+                    }
                 }
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex + "Please try again.");
+                MessageBox.Show("Error: " + ex + " Please try again.");
             }
         }
 
@@ -89,5 +91,72 @@ namespace Mailing_Label
         {
 
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked == true)
+            {
+                this.comboBox3.Items.Clear();
+                SqlConnection sqcon = new SqlConnection(connectionString);
+                try
+                {
+                    sqcon.Open();
+                    string Query = "Select DISTINCT Class_Desc FROM Customer_Class WHERE Class_Isactive='True'";
+                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                    SqlDataReader dr = createCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        string name = dr.GetString(0);
+                        comboBox3.Items.Add(name);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex + " Please try again.");
+                }
+            }
+            else if (checkBox1.Checked == false)
+            {
+                this.comboBox3.Items.Clear();
+                SqlConnection sqcon = new SqlConnection(connectionString);
+                try
+                {
+                    sqcon.Open();
+                    string Query = "Select DISTINCT Class_Desc FROM Customer_Class";
+                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                    SqlDataReader dr = createCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        string name = dr.GetString(0);
+                        comboBox3.Items.Add(name);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex + " Please try again.");
+                }
+            }
+        }
+
+        private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            string w = comboBox1.Text;
+            string x = comboBox2.Text;
+
+            string v = comboBox2.Text;
+
+            int u = string.CompareOrdinal(w, x);
+
+            if (v == "")
+            {
+                    string box2 = comboBox1.SelectedItem.ToString();
+            }
+
+            if (u > 0 && v != "" )
+            {
+                MessageBox.Show("The selected item on the right is " + v + ", which is lower in the descending alphabetical order. Please edit your choice and try again.");
+            }
+        }
     }
 }
+
