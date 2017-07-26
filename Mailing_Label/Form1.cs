@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 
 
+
 namespace Mailing_Label
 {
     public partial class Form1 : Form
@@ -18,6 +19,31 @@ namespace Mailing_Label
         public Form1()
         {
             InitializeComponent();
+            fillcombo();
+        }
+        string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=SgSeqDemo;Persist Security Info=True;User ID=sa;Password=bigtree";
+
+        void fillcombo()
+        {
+            SqlConnection sqcon = new SqlConnection(connectionString);
+            try
+            {
+                sqcon.Open();
+                string Query = "Select DISTINCT Class_Desc FROM Customer_Class";
+                SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                //createCommand.ExecuteNonQuery();
+                SqlDataReader dr = createCommand.ExecuteReader();
+                while(dr.Read())
+                {
+                    string name = dr.GetString(0);
+                    comboBox3.Items.Add(name);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex + "Please try again.");
+            }
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
