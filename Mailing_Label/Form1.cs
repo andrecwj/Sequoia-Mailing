@@ -7,11 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace Mailing_Label
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -36,11 +38,6 @@ namespace Mailing_Label
             }
         }
 
-        private void comboBox2_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            
-        }
-
         private void comboBox2_SelectedValueChanged(object sender, EventArgs e)
         {
             string s = comboBox1.Text;
@@ -54,6 +51,16 @@ namespace Mailing_Label
             {
                 MessageBox.Show("The selected item on the left is " + v + ", which is lower in the descending alphabetical order. Please edit your choice and try again.");
             }
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
