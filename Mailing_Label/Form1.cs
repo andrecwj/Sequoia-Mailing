@@ -78,7 +78,7 @@ namespace Mailing_Label
 
             if (u > 0)
             {
-                MessageBox.Show("The selected item on the left is " + v + ", which is lower in the descending alphabetical order. Please edit your choice and try again.");
+                MessageBox.Show("The selected item on the left is " + v + ". Only alphabets after " + v + " are allowed to be entered on the right. Please try again.","Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
         }
 
@@ -152,9 +152,9 @@ namespace Mailing_Label
                     string box2 = comboBox1.SelectedItem.ToString();
             }
 
-            if (u > 0 && v != "" )
+            if (u > 0 && v != "")
             {
-                MessageBox.Show("The selected item on the right is " + v + ", which is lower in the descending alphabetical order. Please edit your choice and try again.");
+                MessageBox.Show("The selected item on the right is " + v + ". Only alphabets after " + v + " are allowed to be entered on the left. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
         }
     }
