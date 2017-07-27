@@ -173,6 +173,8 @@
             // 
             this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Items.AddRange(new object[] {
+            "ALL"});
             this.comboBox3.Location = new System.Drawing.Point(120, 140);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(280, 24);
@@ -200,6 +202,7 @@
             this.button1.TabIndex = 9;
             this.button1.Text = "Generate";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // checkBox2
             // 
@@ -207,9 +210,9 @@
             this.checkBox2.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox2.Location = new System.Drawing.Point(120, 203);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(195, 27);
+            this.checkBox2.Size = new System.Drawing.Size(198, 27);
             this.checkBox2.TabIndex = 10;
-            this.checkBox2.Text = "Is an Active customer";
+            this.checkBox2.Text = "Is an Active Customer";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // menuStrip1
@@ -236,6 +239,7 @@
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
             this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
             this.preferencesToolStripMenuItem.Text = "Preferences";
+            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
             // Form1
             // 

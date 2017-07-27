@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 
 
@@ -20,7 +22,20 @@ namespace Mailing_Label
         {
             InitializeComponent();
             fillcombo();
+            comboBox3.SelectedIndex = 0;
         }
+
+        private class Item
+        {
+            public string Name;
+            public int Value;
+            public Item(string name, int value)
+            {
+                Name = name;
+                Value = value;
+            }
+        }
+
         string connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=SgSeqDemo;Persist Security Info=True;User ID=sa;Password=bigtree";
 
         void fillcombo()
@@ -96,7 +111,11 @@ namespace Mailing_Label
         {
             if (checkBox1.Checked == true)
             {
+                string name2 = "ALL";
                 this.comboBox3.Items.Clear();
+                comboBox3.Items.Add(name2);
+                comboBox3.SelectedIndex = 0;
+
                 SqlConnection sqcon = new SqlConnection(connectionString);
                 try
                 {
@@ -117,7 +136,11 @@ namespace Mailing_Label
             }
             else if (checkBox1.Checked == false)
             {
+                string name2 = "ALL";
                 this.comboBox3.Items.Clear();
+                comboBox3.Items.Add(name2);
+                comboBox3.SelectedIndex = 0;
+
                 SqlConnection sqcon = new SqlConnection(connectionString);
                 try
                 {
@@ -155,6 +178,124 @@ namespace Mailing_Label
             if (u > 0 && v != "")
             {
                 MessageBox.Show("The selected item on the right is " + v + ". Only alphabets after " + v + " are allowed to be entered on the left. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            }
+        }
+
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form cs = new Settings();
+            cs.Show();
+            
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string cb1 = comboBox1.Text;
+            string cb2 = comboBox2.Text;
+            string cb3 = comboBox3.Text;
+
+            if (cb3 == "ALL" && checkBox1.Checked == false)
+            {
+                SqlConnection sqcon = new SqlConnection(connectionString);
+                try
+                {
+                    sqcon.Open();
+                    string Query = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
+                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                    SqlDataReader dr = createCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        string name = dr.GetString(0);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("An error occured. Please try again.");
+                }
+            }
+            if (cb3 == "ALL" && checkBox2.Checked == false)
+            {
+                SqlConnection sqcon = new SqlConnection(connectionString);
+                try
+                {
+                    sqcon.Open();
+                    string Query = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
+                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                    SqlDataReader dr = createCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        string name = dr.GetString(0);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("An error occured. Please try again.");
+                }
+            }
+
+            if (cb3 == "ALL" && checkBox2.Checked == true)
+            {
+                SqlConnection sqcon = new SqlConnection(connectionString);
+                try
+                {
+                    sqcon.Open();
+                    string Query = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
+                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                    SqlDataReader dr = createCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        string name = dr.GetString(0);
+                        MessageBox.Show(name);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("An error occured. Please try again.");
+                }
+            }
+
+            else
+            {
+                if (checkBox2.Checked == false)
+                {
+                    SqlConnection sqcon = new SqlConnection(connectionString);
+                    try
+                    {
+                        sqcon.Open();
+                        string Query = "Select Customer.Cust_name, Customer_Class.Class_Desc FROM Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' ORDER BY Cust_name ASC";
+                        SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                        SqlDataReader dr = createCommand.ExecuteReader();
+                        while (dr.Read())
+                        {
+                            string name = dr.GetString(0);
+                            MessageBox.Show(name);
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("An error occured. Please try again.");
+                    }
+                }
+                if (checkBox2.Checked == true)
+                {
+                    SqlConnection sqcon = new SqlConnection(connectionString);
+                    try
+                    {
+                        sqcon.Open();
+                        string Query = "Select Customer.Cust_name, Customer_Class.Class_Desc FROM Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
+                        SqlCommand createCommand = new SqlCommand(Query, sqcon);
+                        SqlDataReader dr = createCommand.ExecuteReader();
+                        while (dr.Read())
+                        {
+                            string name = dr.GetString(0);
+                            MessageBox.Show(name);
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("An error occured. Please try again.");
+                    }
+                }
             }
         }
     }
