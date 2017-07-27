@@ -8,8 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-using Microsoft.Office.Interop.Excel;
+using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using System.Threading;
+
 
 
 
@@ -24,6 +26,7 @@ namespace Mailing_Label
             fillcombo();
             comboBox3.SelectedIndex = 0;
         }
+
 
         private class Item
         {
@@ -190,6 +193,7 @@ namespace Mailing_Label
 
         private void button1_Click(object sender, EventArgs e)
         {
+
             string cb1 = comboBox1.Text;
             string cb2 = comboBox2.Text;
             string cb3 = comboBox3.Text;
@@ -203,11 +207,22 @@ namespace Mailing_Label
                     string Query = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
                     SqlCommand createCommand = new SqlCommand(Query, sqcon);
                     SqlDataReader dr = createCommand.ExecuteReader();
+
                     while (dr.Read())
                     {
                         string name = dr.GetString(0);
                     }
+
+                    Excel.Application xlApp;
+                    Excel.Workbook xlWb;
+                    Excel.Worksheet xlWs;
+                    object misValue = System.Reflection.Missing.Value;
+                    xlApp = new Excel.Application();
+                    xlWb = xlApp.Workbooks.Add(misValue);
+                    xlWs = (Excel.Worksheet)xlWb.Worksheets.get_Item(1);
+                    xlApp.Visible = true;
                 }
+
                 catch
                 {
                     MessageBox.Show("An error occured. Please try again.");
