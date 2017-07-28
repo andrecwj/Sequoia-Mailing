@@ -14,7 +14,6 @@ using System.Threading;
 
 
 
-
 namespace Mailing_Label
 {
     public partial class Form1 : Form
@@ -96,7 +95,7 @@ namespace Mailing_Label
 
             if (u > 0)
             {
-                MessageBox.Show("The selected item on the left is " + v + ". Only alphabets after " + v + " are allowed to be entered on the right. Please try again.","Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                MessageBox.Show("The selected item on the left is " + v + ". Only alphabets after " + v + " are allowed to be entered on the right. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
         }
 
@@ -175,7 +174,7 @@ namespace Mailing_Label
 
             if (v == "")
             {
-                    string box2 = comboBox1.SelectedItem.ToString();
+                string box2 = comboBox1.SelectedItem.ToString();
             }
 
             if (u > 0 && v != "")
@@ -184,22 +183,23 @@ namespace Mailing_Label
             }
         }
 
+
         private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form cs = new Settings();
             cs.Show();
-            
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             string cb1 = comboBox1.Text;
             string cb2 = comboBox2.Text;
             string cb3 = comboBox3.Text;
 
             if (cb3 == "ALL" && checkBox1.Checked == false)
             {
+
                 SqlConnection sqcon = new SqlConnection(connectionString);
                 try
                 {
@@ -210,19 +210,37 @@ namespace Mailing_Label
 
                     while (dr.Read())
                     {
-                        string name = dr.GetString(0);
+                        var data = Enumerable.Range(0, 10);
+                        var result = new List<int>();
+
+                        using (var enumerator = data.GetEnumerator())
+                        {
+                            int item = enumerator.Current;
+                            result.Add(item);
+                            string name = dr.GetString(0);
+
+                            Excel.Application xlApp;
+                            Excel.Workbook xlWb;
+                            Excel.Worksheet xlWs;
+                            object misValue = System.Reflection.Missing.Value;
+                            xlApp = new Excel.Application();
+                            xlWb = xlApp.Workbooks.Add(misValue);
+                            xlWs = (Excel.Worksheet)xlWb.Worksheets.get_Item(1);
+
+                            Excel.Range c1 = (Excel.Range)xlWs.Cells[2, 1];
+                            Excel.Range c2 = (Excel.Range)xlWs.Cells[0 + name.Length, 1];
+
+                            Excel.Range range = xlWs.get_Range(c1, c2);
+
+                            range.Value = name;
+                            range.TextToColumns(range, Excel.XlTextParsingType.xlDelimited, Excel.XlTextQualifier.xlTextQualifierNone, false, true);
+
+                            xlApp.Visible = true;
+                        }
                     }
 
-                    Excel.Application xlApp;
-                    Excel.Workbook xlWb;
-                    Excel.Worksheet xlWs;
-                    object misValue = System.Reflection.Missing.Value;
-                    xlApp = new Excel.Application();
-                    xlWb = xlApp.Workbooks.Add(misValue);
-                    xlWs = (Excel.Worksheet)xlWb.Worksheets.get_Item(1);
-                    xlApp.Visible = true;
+                    
                 }
-
                 catch
                 {
                     MessageBox.Show("An error occured. Please try again.");
