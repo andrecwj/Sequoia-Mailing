@@ -52,7 +52,6 @@ namespace Mailing_Label
                 {
                     string Query = "Select DISTINCT Class_Desc FROM Customer_Class";
                     SqlCommand createCommand = new SqlCommand(Query, sqcon);
-                    //createCommand.ExecuteNonQuery();
                     SqlDataReader dr = createCommand.ExecuteReader();
                     while (dr.Read())
                     {
@@ -135,7 +134,7 @@ namespace Mailing_Label
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: " + ex + " Please try again.");
+                    MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
                 }
             }
             else if (checkBox1.Checked == false)
@@ -160,7 +159,7 @@ namespace Mailing_Label
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: " + ex + " Please try again.");
+                    MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
                 }
             }
         }
@@ -203,7 +202,7 @@ namespace Mailing_Label
             catch (Exception ex)
             {
                 obj = null;
-                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+                MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
             }
             finally
             {
@@ -261,7 +260,7 @@ namespace Mailing_Label
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("An error occured." + ex);
+                    MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
                 }
             }
 
@@ -310,7 +309,7 @@ namespace Mailing_Label
 
                 catch (Exception ex)
                 {
-                    MessageBox.Show("An error occured." + ex);
+                    MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
                 }
             }
 
@@ -319,6 +318,7 @@ namespace Mailing_Label
                 try
                 {
                     string sql = null;
+                    string sql2 = null;
                     string data = null;
                     int i = 0;
                     int j = 0;
@@ -352,14 +352,17 @@ namespace Mailing_Label
                     xlWorkbook.Close(true, misValue, misValue);
                     xlApp.Quit();
 
+                    MessageBox.Show("A copy of your customer's names and addresses has been saved as an Excel spreadsheet.");
+
                     releaseObject(xlWorkSheet);
                     releaseObject(xlWorkbook);
                     releaseObject(xlApp);
+
                 }
 
                 catch (Exception ex)
                 {
-                    MessageBox.Show("An error occured. " + ex);
+                    MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
                 }
             }
 
@@ -408,9 +411,9 @@ namespace Mailing_Label
                         releaseObject(xlApp);
                     }
 
-                    catch
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("An error occured. Please try again.");
+                        MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
                     }
                 }
 
@@ -456,9 +459,9 @@ namespace Mailing_Label
                         releaseObject(xlWorkbook);
                         releaseObject(xlApp);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("An error occured. Please try again.");
+                        MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
                     }
                 }
             }
