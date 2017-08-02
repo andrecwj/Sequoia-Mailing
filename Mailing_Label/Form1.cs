@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Reflection;
 
 
 
@@ -191,7 +193,25 @@ namespace Mailing_Label
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void releaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+                MessageBox.Show("Exception Occured while releasing object " + ex.ToString());
+            }
+            finally
+            {
+                GC.Collect();
+            }
+            }
+
+            private void button1_Click(object sender, EventArgs e)
         {
             string cb1 = comboBox1.Text;
             string cb2 = comboBox2.Text;
@@ -199,91 +219,147 @@ namespace Mailing_Label
 
             if (cb3 == "ALL" && checkBox1.Checked == false)
             {
-
-                SqlConnection sqcon = new SqlConnection(connectionString);
                 try
                 {
+                    string sql = null;
+                    string data = null;
+                    int i = 0;
+                    int j = 0;
+
+                    Excel.Application xlApp;
+                    Excel.Workbook xlWorkbook;
+                    Excel.Worksheet xlWorkSheet;
+                    object misValue = System.Reflection.Missing.Value;
+
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlWorkbook = xlApp.Workbooks.Add(misValue);
+                    xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
+
+                    SqlConnection sqcon = new SqlConnection(connectionString);
                     sqcon.Open();
-                    string Query = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
-                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
-                    SqlDataReader dr = createCommand.ExecuteReader();
+                    sql = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
+                    SqlDataAdapter dscmd = new SqlDataAdapter(sql, sqcon);
+                    DataSet ds = new DataSet();
+                    dscmd.Fill(ds);
 
-                    while (dr.Read())
+                    for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                     {
-                        var data = Enumerable.Range(0, 10);
-                        var result = new List<int>();
-
-                        using (var enumerator = data.GetEnumerator())
+                        for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
                         {
-                            int item = enumerator.Current;
-                            result.Add(item);
-                            string name = dr.GetString(0);
-
-                            Excel.Application xlApp;
-                            Excel.Workbook xlWb;
-                            Excel.Worksheet xlWs;
-                            object misValue = System.Reflection.Missing.Value;
-                            xlApp = new Excel.Application();
-                            xlWb = xlApp.Workbooks.Add(misValue);
-                            xlWs = (Excel.Worksheet)xlWb.Worksheets.get_Item(1);
-
-                            Excel.Range c1 = (Excel.Range)xlWs.Cells[2, 1];
-                            Excel.Range c2 = (Excel.Range)xlWs.Cells[0 + name.Length, 1];
-
-                            Excel.Range range = xlWs.get_Range(c1, c2);
-
-                            range.Value = name;
-                            range.TextToColumns(range, Excel.XlTextParsingType.xlDelimited, Excel.XlTextQualifier.xlTextQualifierNone, false, true);
-
-                            xlApp.Visible = true;
+                            data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                            xlWorkSheet.Cells[i + 1, j + 1] = data;
                         }
                     }
 
-                    
+                    xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                    xlWorkbook.Close(true, misValue, misValue);
+                    xlApp.Quit();
+
+                    releaseObject(xlWorkSheet);
+                    releaseObject(xlWorkbook);
+                    releaseObject(xlApp);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    MessageBox.Show("An error occured. Please try again.");
-                }
-            }
-            if (cb3 == "ALL" && checkBox2.Checked == false)
-            {
-                SqlConnection sqcon = new SqlConnection(connectionString);
-                try
-                {
-                    sqcon.Open();
-                    string Query = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
-                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
-                    SqlDataReader dr = createCommand.ExecuteReader();
-                    while (dr.Read())
-                    {
-                        string name = dr.GetString(0);
-                    }
-                }
-                catch
-                {
-                    MessageBox.Show("An error occured. Please try again.");
+                    MessageBox.Show("An error occured." + ex);
                 }
             }
 
-            if (cb3 == "ALL" && checkBox2.Checked == true)
+            else if (cb3 == "ALL" && checkBox2.Checked == false)
             {
-                SqlConnection sqcon = new SqlConnection(connectionString);
                 try
                 {
+                    string sql = null;
+                    string data = null;
+                    int i = 0;
+                    int j = 0;
+
+                    Excel.Application xlApp;
+                    Excel.Workbook xlWorkbook;
+                    Excel.Worksheet xlWorkSheet;
+                    object misValue = System.Reflection.Missing.Value;
+
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlWorkbook = xlApp.Workbooks.Add(misValue);
+                    xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
+
+                    SqlConnection sqcon = new SqlConnection(connectionString);
                     sqcon.Open();
-                    string Query = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
-                    SqlCommand createCommand = new SqlCommand(Query, sqcon);
-                    SqlDataReader dr = createCommand.ExecuteReader();
-                    while (dr.Read())
+                    sql = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
+                    SqlDataAdapter dscmd = new SqlDataAdapter(sql, sqcon);
+                    DataSet ds = new DataSet();
+                    dscmd.Fill(ds);
+
+                    for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                     {
-                        string name = dr.GetString(0);
-                        MessageBox.Show(name);
+                        for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
+                        {
+                            data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                            xlWorkSheet.Cells[i + 1, j + 1] = data;
+                        }
                     }
+
+                    xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                    xlWorkbook.Close(true, misValue, misValue);
+                    xlApp.Quit();
+
+                    releaseObject(xlWorkSheet);
+                    releaseObject(xlWorkbook);
+                    releaseObject(xlApp);
                 }
-                catch
+
+                catch (Exception ex)
                 {
-                    MessageBox.Show("An error occured. Please try again.");
+                    MessageBox.Show("An error occured." + ex);
+                }
+            }
+
+            else if (cb3 == "ALL" && checkBox2.Checked == true)
+            {
+                try
+                {
+                    string sql = null;
+                    string data = null;
+                    int i = 0;
+                    int j = 0;
+
+                    Excel.Application xlApp;
+                    Excel.Workbook xlWorkbook;
+                    Excel.Worksheet xlWorkSheet;
+                    object misValue = System.Reflection.Missing.Value;
+
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlWorkbook = xlApp.Workbooks.Add(misValue);
+                    xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
+
+                    SqlConnection sqcon = new SqlConnection(connectionString);
+                    sqcon.Open();
+                    sql = "Select Cust_name FROM Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
+                    SqlDataAdapter dscmd = new SqlDataAdapter(sql, sqcon);
+                    DataSet ds = new DataSet();
+                    dscmd.Fill(ds);
+
+                    for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
+                    {
+                        for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
+                        {
+                            data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                            xlWorkSheet.Cells[i + 1, j + 1] = data;
+                        }
+                    }
+
+                    xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                    xlWorkbook.Close(true, misValue, misValue);
+                    xlApp.Quit();
+
+                    releaseObject(xlWorkSheet);
+                    releaseObject(xlWorkbook);
+                    releaseObject(xlApp);
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured. " + ex);
                 }
             }
 
@@ -291,38 +367,94 @@ namespace Mailing_Label
             {
                 if (checkBox2.Checked == false)
                 {
-                    SqlConnection sqcon = new SqlConnection(connectionString);
                     try
                     {
+                        string sql = null;
+                        string data = null;
+                        int i = 0;
+                        int j = 0;
+
+                        Excel.Application xlApp;
+                        Excel.Workbook xlWorkbook;
+                        Excel.Worksheet xlWorkSheet;
+                        object misValue = System.Reflection.Missing.Value;
+
+                        xlApp = new Microsoft.Office.Interop.Excel.Application();
+                        xlWorkbook = xlApp.Workbooks.Add(misValue);
+                        xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
+
+                        SqlConnection sqcon = new SqlConnection(connectionString);
                         sqcon.Open();
-                        string Query = "Select Customer.Cust_name, Customer_Class.Class_Desc FROM Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' ORDER BY Cust_name ASC";
-                        SqlCommand createCommand = new SqlCommand(Query, sqcon);
-                        SqlDataReader dr = createCommand.ExecuteReader();
-                        while (dr.Read())
+                        sql = "Select Customer.Cust_name, Customer_Class.Class_Desc FROM Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' ORDER BY Cust_name ASC";
+                        SqlDataAdapter dscmd = new SqlDataAdapter(sql, sqcon);
+                        DataSet ds = new DataSet();
+                        dscmd.Fill(ds);
+
+                        for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                         {
-                            string name = dr.GetString(0);
-                            MessageBox.Show(name);
+                            for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
+                            {
+                                data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                                xlWorkSheet.Cells[i + 1, j + 1] = data;
+                            }
                         }
+
+                        xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                        xlWorkbook.Close(true, misValue, misValue);
+                        xlApp.Quit();
+
+                        releaseObject(xlWorkSheet);
+                        releaseObject(xlWorkbook);
+                        releaseObject(xlApp);
                     }
+
                     catch
                     {
                         MessageBox.Show("An error occured. Please try again.");
                     }
                 }
+
                 if (checkBox2.Checked == true)
                 {
-                    SqlConnection sqcon = new SqlConnection(connectionString);
                     try
                     {
+                        string sql = null;
+                        string data = null;
+                        int i = 0;
+                        int j = 0;
+
+                        Excel.Application xlApp;
+                        Excel.Workbook xlWorkbook;
+                        Excel.Worksheet xlWorkSheet;
+                        object misValue = System.Reflection.Missing.Value;
+
+                        xlApp = new Microsoft.Office.Interop.Excel.Application();
+                        xlWorkbook = xlApp.Workbooks.Add(misValue);
+                        xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
+
+                        SqlConnection sqcon = new SqlConnection(connectionString);
                         sqcon.Open();
-                        string Query = "Select Customer.Cust_name, Customer_Class.Class_Desc FROM Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
-                        SqlCommand createCommand = new SqlCommand(Query, sqcon);
-                        SqlDataReader dr = createCommand.ExecuteReader();
-                        while (dr.Read())
+                        sql = "Select Customer.Cust_name, Customer_Class.Class_Desc FROM Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
+                        SqlDataAdapter dscmd = new SqlDataAdapter(sql, sqcon);
+                        DataSet ds = new DataSet();
+                        dscmd.Fill(ds);
+
+                        for (i = 0; i <= ds.Tables[0].Rows.Count - 1; i++)
                         {
-                            string name = dr.GetString(0);
-                            MessageBox.Show(name);
+                            for (j = 0; j <= ds.Tables[0].Columns.Count - 1; j++)
+                            {
+                                data = ds.Tables[0].Rows[i].ItemArray[j].ToString();
+                                xlWorkSheet.Cells[i + 1, j + 1] = data;
+                            }
                         }
+
+                        xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                        xlWorkbook.Close(true, misValue, misValue);
+                        xlApp.Quit();
+
+                        releaseObject(xlWorkSheet);
+                        releaseObject(xlWorkbook);
+                        releaseObject(xlApp);
                     }
                     catch
                     {
