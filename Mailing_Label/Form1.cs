@@ -208,9 +208,9 @@ namespace Mailing_Label
             {
                 GC.Collect();
             }
-            }
+        }
 
-            private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             string cb1 = comboBox1.Text;
             string cb2 = comboBox2.Text;
@@ -222,8 +222,11 @@ namespace Mailing_Label
                 {
                     string sql = null;
                     string data = null;
+                    string data1 = null;
                     int i = 0;
                     int j = 0;
+                    int k = 0;
+                    int l = 0;
 
                     Excel.Application xlApp;
                     Excel.Workbook xlWorkbook;
@@ -252,12 +255,36 @@ namespace Mailing_Label
 
                     xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                     xlWorkbook.Close(true, misValue, misValue);
+
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlWorkbook = xlApp.Workbooks.Add(misValue);
+                    xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
+
+                    SqlConnection sqcon1 = new SqlConnection(connectionString);
+                    sqcon1.Open();
+                    sql = "select Cust_address, Cust_address1, Cust_PostCode from Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
+                    SqlDataAdapter postcode = new SqlDataAdapter(sql, sqcon1);
+                    DataSet ds1 = new DataSet();
+                    postcode.Fill(ds1);
+
+                    for (k = 0; k <= ds1.Tables[0].Rows.Count - 1; k++)
+                    {
+                        for (l = 0; l <= ds1.Tables[0].Columns.Count - 1; l++)
+                        {
+                            data1 = ds1.Tables[0].Rows[k].ItemArray[l].ToString();
+                            xlWorkSheet.Cells[k + 1, l + 1] = data1;
+                        }
+                    }
+
+                    xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Address_Postcode.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                    xlWorkbook.Close(true, misValue, misValue);
                     xlApp.Quit();
 
                     releaseObject(xlWorkSheet);
                     releaseObject(xlWorkbook);
                     releaseObject(xlApp);
                 }
+
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error occured. Please try again, or contact support for assistance. Error: " + ex);
@@ -269,9 +296,13 @@ namespace Mailing_Label
                 try
                 {
                     string sql = null;
+                    string sql1 = null;
                     string data = null;
+                    string data1 = null;
                     int i = 0;
                     int j = 0;
+                    int k = 0;
+                    int l = 0;
 
                     Excel.Application xlApp;
                     Excel.Workbook xlWorkbook;
@@ -300,11 +331,35 @@ namespace Mailing_Label
 
                     xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                     xlWorkbook.Close(true, misValue, misValue);
+
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlWorkbook = xlApp.Workbooks.Add(misValue);
+                    xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
+
+                    SqlConnection sqcon1 = new SqlConnection(connectionString);
+                    sqcon1.Open();
+                    sql1 = "select Cust_address, Cust_address1, Cust_PostCode from Customer WHERE Cust_name BETWEEN'" + cb1 + "'AND'" + cb2 + "ZZZZZZZZ' ORDER BY Cust_name ASC";
+                    SqlDataAdapter postcode = new SqlDataAdapter(sql1, sqcon1);
+                    DataSet ds1 = new DataSet();
+                    postcode.Fill(ds1);
+
+                    for (k = 0; k <= ds1.Tables[0].Rows.Count - 1; k++)
+                    {
+                        for (l = 0; l <= ds1.Tables[0].Columns.Count - 1; l++)
+                        {
+                            data1 = ds1.Tables[0].Rows[k].ItemArray[l].ToString();
+                            xlWorkSheet.Cells[k + 1, l + 1] = data1;
+                        }
+                    }
+
+                    xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Address_Postcode.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                    xlWorkbook.Close(true, misValue, misValue);
                     xlApp.Quit();
 
                     releaseObject(xlWorkSheet);
                     releaseObject(xlWorkbook);
                     releaseObject(xlApp);
+
                 }
 
                 catch (Exception ex)
@@ -318,10 +373,13 @@ namespace Mailing_Label
                 try
                 {
                     string sql = null;
-                    string sql2 = null;
+                    string sql1 = null;
                     string data = null;
+                    string data1 = null;
                     int i = 0;
                     int j = 0;
+                    int k = 0;
+                    int l = 0;
 
                     Excel.Application xlApp;
                     Excel.Workbook xlWorkbook;
@@ -350,14 +408,33 @@ namespace Mailing_Label
 
                     xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                     xlWorkbook.Close(true, misValue, misValue);
-                    xlApp.Quit();
+                    xlApp = new Microsoft.Office.Interop.Excel.Application();
+                    xlWorkbook = xlApp.Workbooks.Add(misValue);
+                    xlWorkSheet = (Excel.Worksheet)xlWorkbook.Worksheets.get_Item(1);
 
-                    MessageBox.Show("A copy of your customer's names and addresses has been saved as an Excel spreadsheet.");
+                    SqlConnection sqcon1 = new SqlConnection(connectionString);
+                    sqcon1.Open();
+                    sql1 = "select Cust_address, Cust_address1, Cust_PostCode from Customer WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
+                    SqlDataAdapter postcode = new SqlDataAdapter(sql1, sqcon1);
+                    DataSet ds1 = new DataSet();
+                    postcode.Fill(ds1);
+
+                    for (k = 0; k <= ds1.Tables[0].Rows.Count - 1; k++)
+                    {
+                        for (l = 0; l <= ds1.Tables[0].Columns.Count - 1; l++)
+                        {
+                            data1 = ds1.Tables[0].Rows[k].ItemArray[l].ToString();
+                            xlWorkSheet.Cells[k + 1, l + 1] = data1;
+                        }
+                    }
+
+                    xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Address_Postcode.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                    xlWorkbook.Close(true, misValue, misValue);
+                    xlApp.Quit();
 
                     releaseObject(xlWorkSheet);
                     releaseObject(xlWorkbook);
                     releaseObject(xlApp);
-
                 }
 
                 catch (Exception ex)
@@ -373,9 +450,13 @@ namespace Mailing_Label
                     try
                     {
                         string sql = null;
+                        string sql1 = null;
                         string data = null;
+                        string data1 = null;
                         int i = 0;
                         int j = 0;
+                        int k = 0;
+                        int l = 0;
 
                         Excel.Application xlApp;
                         Excel.Workbook xlWorkbook;
@@ -404,6 +485,25 @@ namespace Mailing_Label
 
                         xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                         xlWorkbook.Close(true, misValue, misValue);
+
+                        SqlConnection sqcon1 = new SqlConnection(connectionString);
+                        sqcon1.Open();
+                        sql1 = "select Cust_address, Cust_address1, Cust_PostCode from Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' ORDER BY Cust_name ASC";
+                        SqlDataAdapter postcode = new SqlDataAdapter(sql1, sqcon1);
+                        DataSet ds1 = new DataSet();
+                        postcode.Fill(ds1);
+
+                        for (k = 0; k <= ds1.Tables[0].Rows.Count - 1; k++)
+                        {
+                            for (l = 0; l <= ds1.Tables[0].Columns.Count - 1; l++)
+                            {
+                                data1 = ds1.Tables[0].Rows[k].ItemArray[l].ToString();
+                                xlWorkSheet.Cells[k + 1, l + 1] = data1;
+                            }
+                        }
+
+                        xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Address_Postcode.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                        xlWorkbook.Close(true, misValue, misValue);
                         xlApp.Quit();
 
                         releaseObject(xlWorkSheet);
@@ -422,9 +522,13 @@ namespace Mailing_Label
                     try
                     {
                         string sql = null;
+                        string sql1 = null;
                         string data = null;
+                        string data1 = null;
                         int i = 0;
                         int j = 0;
+                        int k = 0;
+                        int l = 0;
 
                         Excel.Application xlApp;
                         Excel.Workbook xlWorkbook;
@@ -453,11 +557,31 @@ namespace Mailing_Label
 
                         xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Name.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                         xlWorkbook.Close(true, misValue, misValue);
+                        SqlConnection sqcon1 = new SqlConnection(connectionString);
+                        sqcon1.Open();
+                        sql1 = "select Cust_address, Cust_address1, Cust_PostCode from Customer INNER JOIN Customer_Class ON Customer.Cust_Class=Customer_Class.Class_Code WHERE Cust_name BETWEEN '" + cb1 + "' AND '" + cb2 + "ZZZZZZZZ' AND Customer_Class.Class_Desc='" + cb3 + "' AND Cust_isactive = 'True' ORDER BY Cust_name ASC";
+                        SqlDataAdapter postcode = new SqlDataAdapter(sql1, sqcon1);
+                        DataSet ds1 = new DataSet();
+                        postcode.Fill(ds1);
+
+                        for (k = 0; k <= ds1.Tables[0].Rows.Count - 1; k++)
+                        {
+                            for (l = 0; l <= ds1.Tables[0].Columns.Count - 1; l++)
+                            {
+                                data1 = ds1.Tables[0].Rows[k].ItemArray[l].ToString();
+                                xlWorkSheet.Cells[k + 1, l + 1] = data1;
+                            }
+                        }
+
+                        xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Address_Postcode.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                        xlWorkbook.Close(true, misValue, misValue);
                         xlApp.Quit();
 
                         releaseObject(xlWorkSheet);
                         releaseObject(xlWorkbook);
                         releaseObject(xlApp);
+
+
                     }
                     catch (Exception ex)
                     {
