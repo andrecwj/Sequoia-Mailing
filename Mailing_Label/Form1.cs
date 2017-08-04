@@ -182,15 +182,7 @@ namespace Mailing_Label
             {
                 MessageBox.Show("The selected item on the right is " + v + ". Only alphabets after " + v + " are allowed to be entered on the left. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
             }
-        }
-
-
-        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Form cs = new Settings();
-            cs.Show();
-
-        }
+        } 
 
         private void releaseObject(object obj)
         {
@@ -266,7 +258,7 @@ namespace Mailing_Label
                     SqlDataAdapter postcode = new SqlDataAdapter(sql, sqcon1);
                     DataSet ds1 = new DataSet();
                     postcode.Fill(ds1);
-
+                     
                     for (k = 0; k <= ds1.Tables[0].Rows.Count - 1; k++)
                     {
                         for (l = 0; l <= ds1.Tables[0].Columns.Count - 1; l++)
