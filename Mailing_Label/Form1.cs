@@ -202,6 +202,94 @@ namespace Mailing_Label
             }
         }
 
+        public class MergeExcel
+        {
+            Excel.Application app = new Excel.Application();
+            Excel.Workbook bookDest = null;
+            Excel.Worksheet sheetDest = null;
+            Excel.Workbook bookSource = null;
+            Excel.Worksheet sheetSource = null;
+
+            string[] _sourceFiles = null;
+            string _destFile = string.Empty;
+            string _columnEnd = string.Empty;
+            int _headerRowCount = 0;
+            int _currentRowCount = 0;
+            
+
+            public MergeExcel(string[] sourceFiles, string destFile, string columnEnd, int headerRowCount)
+            {
+                bookDest = (Excel.Workbook)app.Workbooks.Add(Missing.Value);
+                sheetDest = bookDest.Worksheets.Add(Missing.Value, Missing.Value, Missing.Value, Missing.Value) as Excel.Worksheet;
+                sheetDest.Name = "Data";
+                _sourceFiles = sourceFiles;
+                _destFile = destFile;
+                _columnEnd = columnEnd;
+                _headerRowCount = headerRowCount;
+            }
+
+            void OpenBook(string fileName)
+            {
+                bookSource = app.Workbooks._Open(fileName, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value, Missing.Value);
+                sheetSource = bookSource.Worksheets[1] as Excel.Worksheet;
+            }
+
+            void CloseBook()
+            {
+                bookSource.Close(false, Missing.Value, Missing.Value);
+            }
+
+            void CopyHeader()
+            {
+                Excel.Range range = sheetSource.get_Range("A1", _columnEnd + _headerRowCount.ToString());
+                range.Copy(sheetDest.get_Range("A1", Missing.Value));
+                _currentRowCount += range.Rows.Count;
+            }
+
+            void CopyData()
+            {
+                int sheetRowCount = sheetSource.UsedRange.Rows.Count;
+                Excel.Range range = sheetSource.get_Range(string.Format("A{0}", _headerRowCount), _columnEnd + sheetRowCount.ToString());
+                range.Copy(sheetDest.get_Range(string.Format("A{0}", _currentRowCount), Missing.Value));
+                _currentRowCount += range.Rows.Count;
+            }
+
+            void Save()
+            {
+                bookDest.Saved = true;
+                bookDest.SaveCopyAs(_destFile);
+            }
+
+            void Quit()
+            {
+                app.Quit();
+            }
+
+            void DoMerge()
+            {
+                bool b = false;
+
+                foreach (string strFile in _sourceFiles)
+                {
+                    OpenBook(strFile);
+
+                    if (b == false)
+                    {
+                        CopyHeader();
+                        b = true;
+                    }
+                    CopyData();
+                    CloseBook();
+                }
+                Save();
+                Quit();
+            }
+            public static void DoMerge(string[] sourceFiles, string destFile, string columnEnd, int headerRowCount)
+            {
+                new MergeExcel(sourceFiles, destFile, columnEnd, headerRowCount).DoMerge();
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             string cb1 = comboBox1.Text;
@@ -270,11 +358,38 @@ namespace Mailing_Label
 
                     xlWorkbook.SaveAs(@"M:\SequoiaPOS\Mailing_Address_Postcode.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
                     xlWorkbook.Close(true, misValue, misValue);
-                    xlApp.Quit();
+
+                    /*var app = new Microsoft.Office.Interop.Excel.Application();
+                    var wb = app.Workbooks.Add();
+                    wb.SaveAs(@"M:\SequoiaPOS\Combined_Mailing.xls");
+                    wb.Close();
+                    
+                    xlApp.Visible = false;
+                    Workbook w1 = xlApp.Workbooks.Add(@"M:\SequoiaPOS\Mailing_Name.xls");
+                    Workbook w2 = xlApp.Workbooks.Add(@"M:\SequoiaPOS\Mailing_Address_Postcode.xls");
+                    Workbook w3 = xlApp.Workbooks.Add(@"M:\SequoiaPOS\Combined_Mailing.xls");
+
+                    for (int x = 2; x <= xlApp.Workbooks.Count; x++)
+                    {
+                        for (int y = 1; y <= xlApp.Workbooks[x].Worksheets.Count; y++)
+                        {
+                            Worksheet ws = (Worksheet)xlApp.Workbooks[x].Worksheets[y];
+                            ws.Copy(xlApp.Workbooks[1].Worksheets[1]);
+                        }
+                    }
+
+                    xlApp.Workbooks[1].SaveCopyAs(@"M:\SequoiaPOS\Combined_Mailing.xls");
+                    w1.Close(0);
+                    w2.Close(0);
+                    w3.Close(0);
+                    xlApp.Quit(); */
+
+                    MergeExcel.DoMerge(new string[] { @"M:\SequoiaPOS\Mailing_Name.xls", @"M:\SequoiaPOS\Mailing_Address_Postcode.xls" }, @"M:\SequoiaPOS\Combined_Mailing.xls", "E", 2);
 
                     releaseObject(xlWorkSheet);
                     releaseObject(xlWorkbook);
                     releaseObject(xlApp);
+
                 }
 
                 catch (Exception ex)
